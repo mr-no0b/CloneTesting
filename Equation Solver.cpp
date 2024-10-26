@@ -301,6 +301,36 @@ void gauss_seidel(vector<int>vec[], int n)
     cout << "Did not converge within the maximum iterations.\n";
 }
 
+double secantMethod(double x0, double x1)
+{
+    int maxIter=1000;
+    double tol=0.00001;
+    double x2;
+    for (int i = 0; i < maxIter; ++i)
+    {
+        double f_x0 = fx(x0);
+        double f_x1 = fx(x1);
+
+        if (fabs(f_x1 - f_x0) < 1e-10)
+        {
+            cout << "Division by zero error in method." << endl;
+            return x1;
+        }
+        x2 = x1 - f_x1 * (x1 - x0) / (f_x1 - f_x0);
+
+        if (fabs(x2 - x1) < tol)
+        {
+            return x2;
+        }
+
+        x0 = x1;
+        x1 = x2;
+    }
+
+    cout << "Method did not converge within the maximum iterations." << endl;
+    return x2;
+}
+
 
 int main()
 {
@@ -376,7 +406,18 @@ int main()
          false_position(n);
         }
         else if(method == 7){
-            
+                for (int k = 0; k<n; k++)
+    {
+        double x0, x1;
+        cout << "Enter two initial guesses to find root "<<k+1<<": ";
+        cin >> x0 >> x1;
+
+        double root = secantMethod(x0, x1);
+        ans.push_back(root);
+
+        coeffs = def( root);
+    }
+
         }
         else if(method == 8){
           newton_raphson(n);
