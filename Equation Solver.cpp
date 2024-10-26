@@ -291,21 +291,21 @@ int main()
     for (int i=0; i<=n; i++)
         cin>>coeffs[i];
         printf("Choose the desired method: \n");
-        printf("\t4 - Bisection method\n");
-        printf("\t5 - False position method\n");
-        printf("\t6 - Secant method\n");
-        printf("\t7 - Newton Raphson method\n\n");
+        printf("\t5 - Bisection method\n");
+        printf("\t6 - False position method\n");
+        printf("\t7 - Secant method\n");
+        printf("\t8 - Newton Raphson method\n\n");
         cin >> method;
-        if(method == 4){
+        if(method == 5){
 
         }
-        else if(method == 5){
+        else if(method == 6){
                    false_position(n);
         }
-        else if(method == 6){
+        else if(method == 7){
             
         }
-        else if(method == 7){
+        else if(method == 8){
                        newton_raphson(n);
         }
      cout << endl<<"Roots found:" << endl;
