@@ -32,7 +32,7 @@ NON LINEAR SYSTEM:
 
  DIFFERENTIAL EQUATIONS:
 
-    Runge-Kutta method: This algorithm effectively solves Ordinary differential equations of the form dy/dx=f(x,y) with initial condition y(x0)=y0. Fourth order Runge-Kutta method(RK4) provides good accuracy with less computation than higher ordered methods in most case. To implement RK4 method here we used 4 equations.
+    Runge-Kutta method: This algorithm effectively solves Ordinary differential equations of the form "dy/dx=f(x,y)" with initial condition y(x0)=y0. Fourth order Runge-Kutta method(RK4) provides good accuracy with less computation than higher ordered methods in most case. To implement RK4 method here we used 4 equations.
 
 MATRIX INVERSION:
     
