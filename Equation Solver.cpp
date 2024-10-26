@@ -1,6 +1,69 @@
 #include <bits/stdc++.h>
 using namespace std;
 vector<double> coeffs,ans;
+void identity(vector <double>ara[], int n){
+    for(int i = 0; i < n; i++){
+        int temp  = ara[i][i];
+        for(int j = 0; j < 2*n; j++){
+            ara[i][j] /= temp;
+        }
+    }
+}
+void lower_triangular(vector <double> ara[], int n){
+    int i = 0, j = n-1;
+    while(1){
+        if(ara[i][j] != 0){
+            int k = 1;
+            while(ara[i+k][j] == 0) {
+                k++;
+            }
+            int temp1 = ara[i][j];
+            for(int l = 0; l < 2*n; l++) {
+                    ara[i][l] *= ara[i+k][j];
+            }
+            for(int l = 0; l < 2*n; l++) {
+                ara[i+k][l] *= temp1;
+            }
+            for(int x = 0; x < 2*n;x++) {
+                ara[i][x] -= ara[i+k][x];
+            } 
+        }
+        i++;
+        if(i == j) {
+            j--; i = 0;
+        }
+        if(j == 0) break;
+    }
+    return;
+}
+void upper_triangular(vector <double> ara[], int n){
+    int i = n-1, j = 0;
+    while(1){
+        if(ara[i][j] != 0) {
+            int k = 1;
+            while(ara[i-k][j] == 0) {
+                k++;
+            }
+            int temp1 = ara[i][j];
+            int temp =  ara[i-k][j];
+            for(int l = 0; l < 2*n; l++) {
+                    ara[i][l] *= ara[i-k][j];
+            }
+            for(int l = 0; l < 2*n; l++) {
+                ara[i-k][l] *= temp1;
+            }
+            for(int x = 0; x < 2*n;x++) {
+                ara[i][x] -= ara[i-k][x];
+            }
+        }
+        i--;
+        if(i == j) {
+            j++; i = n-1;
+        }
+        if(j == n-1) break;
+    }
+    return;
+}
 
 double fx(double x)
 {
@@ -94,6 +157,7 @@ int false_position(int n)
         ans.push_back(root);
         coeffs = def(root);
     }
+    return 0;
 }
 
 int newton_raphson(int n)
@@ -106,6 +170,7 @@ int newton_raphson(int n)
         ans.push_back(root);
         coeffs = def( root);
     }
+    return 0;
 }
 
 vector <int> * gaus(vector <int> ara[], int n){
@@ -173,43 +238,51 @@ vector <int> * Jordan(vector <int> ara[], int n){
 }
 void Jordan_solver(vector <int> ara[], int n){
     Jordan(ara, n);
+    double ans[n] = {};
     for(int i = 0; i < n; i++){
         ara[i][n] = ara[i][n]/ara[i][i];
+        ans[i] = (ara[i][n]*1.0)/(ara[i][i]*1.0);
         ara[i][i] = ara[i][i]/ara[i][i];
+        ans[i] = (ara[i][i]*1.0)/(ara[i][i]*1.0);
     }
     for(int i = 0; i < n; i++){
         cout << "x" << i+1 << " = " << ara[i][n] << endl;
     }
 }
 void gaus_solver(vector <int> ara[], int n){
-    int ans[n] = {};
+    double ans[n] = {};
     ans[n-1] =ara[n-1][n] / ara[n-1][n-1];
     for(int i = n - 2; i >= 0; i--){
         ans[i] = ara[i][n];
         for(int j = i+1; j < n; j++){
             ans[i] -= ara[i][j]*ans[j];
         }
-        ans[i] /= ara[i][i];
+        ans[i] /= ara[i][i]*1.0;
     }
     for(int i = 0 ; i < n; i++){
         cout << "x"<< i+1 << " = " << ans[i] << endl;
     }
 }
 double fx(double x, double y){
-    return x-y;
+    return cos(x);
 }
 double ffx(double x){
-    return x = x - 1.0 + 2.0/exp(x);
+    return sin(x);
 }
 void rungekutta(){
     vector <double> arax;
     vector <double> aray;
     vector <double> araye;
     int i = 0;
-    double x = 0, y = 1, step = 0.1;
+    double x , y , step;
+    printf("Initial Value of X: ");
+    cin >> x;
+    printf("Initial Value of Y: ");
+    cin >> y;
+    printf("Step Size: ");
+    cin >> step;
     araye.push_back(1);
     while(x <= 10){
-        cout << i++ << endl;
         arax.push_back(x);
         aray.push_back(y);
         double k1 = step*fx(x,y);
@@ -220,15 +293,74 @@ void rungekutta(){
         x +=  step;
         araye.push_back(ffx(x));
     }
-    for(auto it: arax){
-        cout << it << endl;
+    for(int i = 0; abs(arax[i]) < 9; i++){
+        cout << arax[i] << "\t" <<aray[i] << endl;
     }
-    for(auto it: aray){
-        cout << it << endl;
-    }
-    
 }
-
+void matrix_inverter(vector <double> ara[], int n){
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            if(i == j) ara[i].push_back(1);
+            else ara[i].push_back(0);
+        }
+    }
+    upper_triangular(ara, n);
+    lower_triangular(ara, n);
+    identity(ara, n);
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < 2*n; j++){
+            cout << ara[i][j] << "\t";
+        }
+        cout << endl;
+    }
+}
+void LU(vector <int> ara[], vector <float> lower[], vector <float> upper[], int n){
+    int i = 1, j = 0;
+    while(1){
+        if(ara[i][j] != 0) {
+            float temp1 = upper[i][j];
+            float temp2 = upper[j][j];
+            lower[i][j] = temp1/temp2;
+            for(int x = 0; x <= n;x++) {
+                upper[i][x] -= upper[j][x]*(temp1/temp2);
+                if(fabs(upper[i][x])  == 0) upper[i][x] = 0;
+            }
+        }
+        i++;
+        if(i == n) {
+            j++; i = j+1;
+        }
+        if(j == n-1) break;
+    }
+    for(int i = 0; i < n; i++){
+        lower[i].push_back(ara[i][n]);
+    }
+    float ans[n] = {};
+    ans[0] =lower[0][n] / lower[0][0];
+    for(int i = 1; i < n; i++){
+        ans[i] = lower[i][n];
+        for(int j = 0; j < i; j++){
+            ans[i] -= lower[i][j]*ans[j];
+        }
+        ans[i] /= lower[i][i]*1.0;
+    }
+    for(int i = 0; i < n; i++){
+        upper[i].push_back(ans[i]);
+    }
+    float ans2[n] = {};
+    ans2[n-1] = upper[n-1][n] / upper[n-1][n-1];
+    for(int i = n - 2; i >= 0; i--){
+        ans2[i] = upper[i][n];
+        for(int j = i+1; j < n; j++){
+            ans2[i] -= upper[i][j]*ans2[j];
+        }
+        ans2[i] = ans2[i] / upper[i][i];
+    }
+    for(int i = 0 ; i < n; i++){
+        cout << "x"<< i+1 << " = " << ans2[i] << endl;
+    }
+    return;
+}
 void jacobiMethod(vector<int> vec[], int n)
 {
     vector<double> x(n,0.0),x1(n, 0.0);
@@ -384,29 +516,34 @@ int main()
             }
         }
         if(method == 0){
-          jacobiMethod(ara,n);
+            jacobiMethod(ara, n);
         }
         else if(method == 1){
-            gauss_seidel(ara,n);
+			gauss_seidel(ara, n);
         }
         else if(method == 2){
+            cout << "\tSOLUTION USING GAUS ELIMINATION\n";
             gaus(ara, n);
             gaus_solver(ara, n);
             
         }
         else if(method == 3){
+            cout << "\tSOLUTION USING GAUS-JORDAN ELIMINATION\n";
             gaus(ara, n);
             Jordan(ara, n);
             Jordan_solver(ara, n);
         }
         else if(method == 4){
-
-        }
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j <= n; j++){
-                cout << ara[i][j] << " ";
+            cout << "\tSOLUTION USING LU DECOMPOSITION\n";
+            vector<float> lower[n];
+            vector<float> upper[n];
+            for(int i = 0; i < n; i++){
+                for(int j = 0; j < n; j++){
+                    if(i == j)lower[i].push_back(1);
+                    else lower[i].push_back(0);upper[i].push_back(ara[i][j]);
+                }
             }
-            cout << endl;
+            LU(ara, lower, upper, n);
         }
     }
     if(OPcode  == 1){
@@ -466,6 +603,26 @@ int main()
         cout <<"x"<<i+1<<" = "<<ans[i]<<endl;
     }
         
+    }
+    
+    else if(OPcode == 2){
+        cout << "\tSOLUTION USING RUNGE KUTTA METHOD\n";
+        rungekutta();
+    }
+    else if(OPcode == 3){
+        cout << "\tINVERSE MATRIX\n";
+        int n;
+        double temp;
+        printf("Please provide the order of Matrix: ");
+        cin >> n;
+        vector <double> ara[n];
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                cin >> temp;
+                ara[i].push_back(temp);
+            }
+        }
+        matrix_inverter(ara, n);
     }
     return 0;
 }
