@@ -331,6 +331,30 @@ double secantMethod(double x0, double x1)
     return x2;
 }
 
+double bisection(double a, double b)
+{
+    if (fx (a) * fx(b) >= 0)
+    {
+        throw invalid_argument("No sign change in interval.Bisection method cannot be applied");
+    }
+    int maxIterations=1000;
+    double tolerance=0.00001;
+    double c = a;
+    for (int i = 0; i < maxIterations; i++)
+    {
+        c = (a + b) / 2;
+
+        double fc = fx(c);
+        if (fc == 0.0 || fabs(b - a) / 2 < tolerance)
+            return c;
+
+        if (fc * fx(a) < 0)
+            b = c;
+        else
+            a = c;
+    }
+    return c;
+}
 
 int main()
 {
@@ -400,7 +424,21 @@ int main()
         printf("\t8 - Newton Raphson method\n\n");
         cin >> method;
         if(method == 5){
-
+           for (int i = 0; i < n; i++)
+            {
+                double a, b;
+                cout << "Enter the interval [a, b] for root " << i + 1 << ": ";
+                cin >> a >> b;
+                try
+                {
+                    double root = bisection(a, b);
+                    ans.push_back(root);
+                }
+                catch (const invalid_argument& e)
+                {
+                    cout << e.what() << " for interval [" << a << ", " << b << "]\n";
+                }
+            }
         }
         else if(method == 6){
          false_position(n);
