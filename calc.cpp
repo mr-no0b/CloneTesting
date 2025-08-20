@@ -16,6 +16,7 @@ int main(){
     }
     else if(xx==4){
         cout<<x/y;
+        cout<<"hehe";
     }
 }
 //changed
