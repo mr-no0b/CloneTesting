@@ -7,6 +7,8 @@ int main(){
     if(c=='+'){
         cout<<x+y;
     }
+    //new line
+    //new line
     else if(c=='-'){
         cout<<x-y;
     }
